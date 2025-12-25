@@ -1,10 +1,11 @@
 import Link from "next/link"
 import { FileText } from "lucide-react"
 import Navlink from "./navlink"
+import { SignedIn,SignedOut,UserButton } from "@clerk/nextjs"
 
 export default function Header(){
 
-    let isLogin=false
+    
     return(
         <nav className="cointainer flex items-center justify-between">
             <div>
@@ -19,17 +20,30 @@ export default function Header(){
             </div>
 
             <div>
-                {isLogin &&<Navlink href="/dashboard">Your Summaries</Navlink>}
+                <SignedIn>
+                <Navlink href="/dashboard">Your Summaries</Navlink>
+                </SignedIn>
             </div>
             
-            <div>
-                {isLogin &&<Navlink href="/upload">Upload a PDF</Navlink>}
-            </div>
+            
+                <SignedIn>
+                <div>
+                        <Navlink href="/upload">Upload a PDF</Navlink>
+                        <div>Pro</div>
+                        <SignedIn>
+                           <UserButton />
+                        </SignedIn>
 
-            <div>
+                    </div>
+                </SignedIn>
+            <SignedOut>     
+                <Navlink href="/sign-in">Sign In</Navlink>
+            </SignedOut>
+
+            {/* <div>
                { isLogin? <Link href="/sign-out">Sign Out</Link>:
                 <Navlink href="/sign-in">Sign In</Navlink>}
-            </div>
+            </div> */}
         </nav>
     )
 }
