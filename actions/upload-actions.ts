@@ -1,5 +1,6 @@
 "use server";
 
+import { generateSummaryFromAI } from "@/utils/geminiai";
 import { fetchAndExtractPdfText } from "@/utils/langchain";
 
 type UploadResponse = Array<{
@@ -30,6 +31,25 @@ export async function generatePdfSummary(uploadResponse: UploadResponse) {
 
   try {
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
+
+    let summary;
+    try{
+        summary=await generateSummaryFromAI(pdfText)
+        console.log({summary})
+
+    }catch(error){
+        console.log(error)
+    }
+
+    if(!summary){
+
+        return {
+            success: false,
+            message: "Failed to generate Summary",
+            data: null
+        
+    }
+}
 
     // ✅ RETURN something to the client
     return {
