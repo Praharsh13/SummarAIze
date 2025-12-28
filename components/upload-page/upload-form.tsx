@@ -4,6 +4,7 @@ import UploadInput from './upload-form-input'
 import { z } from 'zod'
 import { useUploadThing } from '@/utils/uploadthing'
 import { toast } from 'sonner'
+import { generatePdfSummary } from '@/actions/upload-actions'
 
 
 const schema=z.object({
@@ -69,7 +70,13 @@ const Uploadform = () => {
         toast.success("Uploaded", {
             description: "Your PDF is uploaded. Generating summary now.",
           });
-       
+
+
+          //parse the pdf using langChain
+
+          const res = await generatePdfSummary(resp);
+console.log("summary", res);
+console.log(res.data?.text);
     }
 
    
