@@ -4,7 +4,7 @@ import UploadInput from './upload-form-input'
 import { z } from 'zod'
 import { useUploadThing } from '@/utils/uploadthing'
 import { toast } from 'sonner'
-import { generatePdfSummary } from '@/actions/upload-actions'
+import { generatePdfSummary, storedPDFSummaryAction } from '@/actions/upload-actions'
 
 
 // const schema=z.object({
@@ -98,15 +98,35 @@ const Uploadform = () => {
           setLoading(false)
 
           //Get summary
-          const {data=null,message=null}=res || {}
+          //const {data=null,message=null}=res || {}
 
-          if(data){
+          if(res.data){
+
+            let storedResult:any
             toast.success("Saving PDF...", {
                 description: "Hang tight! We are saving your summary!",
               });
-          }
+          
 
-          formRef.current?.reset()
+          
+          
+          if(res.data?.summary){
+
+            storedResult=await storedPDFSummaryAction({
+                summary:res.data?.summary,
+                fileUrl:resp[0].serverData.file.ufsUrl,
+                title:res.data.fileName,
+                fileName:resp[0].serverData.file.name
+            })
+
+
+            toast.success("Summary Generated...", {
+                description: "Your PDF has been saved!",
+              });
+
+              formRef.current?.reset()
+
+          }}
             
         } catch (error) {
             setLoading(false)
