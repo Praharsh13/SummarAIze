@@ -225,7 +225,7 @@ ${SUMMARY_SYSTEM_PROMPT}
 Transform this document into an engaging, easy-to-read summary.
 Use relevant emojis and proper Markdown formatting.
 
-${pdfText.slice(0, 120_000)}
+${pdfText}
 `;
 
     const response = await ai.models.generateContent({

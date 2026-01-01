@@ -71,4 +71,5 @@ Offer practical, actionable advice based on the document.
 - Keep language simple and human
 - Ensure the summary can be read in under 2 minutes
 - Output must be valid Markdown
+- Make sure read the whole file and generate whole not fragmented
 `;
