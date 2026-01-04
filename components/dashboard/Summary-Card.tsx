@@ -76,6 +76,7 @@ const StatusPill = ({ status }: { status: string }) => {
 };
 
 const SummaryCard = ({ summary }: { summary: any }) => {
+  {console.log(summary)}
   return (
     <div className="relative overflow-hidden rounded-3xl border border-black/10 bg-white/55 p-5 shadow-[0_20px_80px_-45px_rgba(0,0,0,0.35)] backdrop-blur-xl transition hover:-translate-y-[2px] hover:bg-white/70">
       {/* glow */}
@@ -93,11 +94,10 @@ const SummaryCard = ({ summary }: { summary: any }) => {
           </span>
         </div>
 
+       
+
         {/* delete button (doesn't navigate) */}
-        <DeleteButton summaryId={summary.id} onConfirm={async(id)=>{
-            deleteSummary({summaryId:id}
-                )
-        }} />
+        <DeleteButton summaryId={summary.id}  />
       </div>
 
       {/* content */}

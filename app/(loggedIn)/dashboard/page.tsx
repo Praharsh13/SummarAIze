@@ -4,6 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import SummaryCard from "@/components/dashboard/Summary-Card";
 import { getSummaries } from "@/utils/summaries";
+import EmptySummaryState from "@/components/dashboard/EmptySummaryState";
 
 const SummaryPage = async () => {
   const user = await currentUser();
@@ -86,28 +87,33 @@ const SummaryPage = async () => {
             <p className="text-xs text-black/50">Newest first</p>
           </div>
 
-          {summaries?.length ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {summaries.map((summary: any) => (
-                <div
-                  key={summary.id}
-                  
-                >
-                  <SummaryCard summary={summary} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-10 rounded-2xl border border-dashed border-black/15 bg-white/40 p-8 text-center backdrop-blur">
-              <p className="text-base font-semibold text-black/80">No summaries yet</p>
-              <p className="mt-1 text-sm text-black/55">
-                Upload your first PDF and your summaries will show up here.
-              </p>
+          {summaries?.length===0 ? 
+          <EmptySummaryState/>
+           
+           : (
 
-              <Button asChild className="mt-5 h-11 rounded-xl px-6">
-                <Link href="/upload">Create your first summary</Link>
-              </Button>
-            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {summaries.map((summary: any) => (
+              <div
+                key={summary.id}
+                
+              >
+                <SummaryCard summary={summary} />
+              </div>
+             
+            ))}
+             </div>
+          
+            // <div className="mt-10 rounded-2xl border border-dashed border-black/15 bg-white/40 p-8 text-center backdrop-blur">
+            //   <p className="text-base font-semibold text-black/80">No summaries yet</p>
+            //   <p className="mt-1 text-sm text-black/55">
+            //     Upload your first PDF and your summaries will show up here.
+            //   </p>
+
+            //   <Button asChild className="mt-5 h-11 rounded-xl px-6">
+            //     <Link href="/upload">Create your first summary</Link>
+            //   </Button>
+            // </div>
           )}
         </div>
       </div>

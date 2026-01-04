@@ -3,6 +3,7 @@
 import React from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -14,22 +15,27 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "../ui/alert-dialog";
+import { deleteSummary } from "@/actions/summary-actions";
 
-type DeleteButtonProps = {
-  summaryId: string;
-  onConfirm: (summaryId: string) => Promise<void> | void;
-  isLoading?: boolean;
-};
+const DeleteButton = ({ summaryId }: { summaryId: string }) => {
+  const router = useRouter();
+  console.log("2summary.id", summaryId);
 
-const DeleteButton = ({ summaryId, onConfirm, isLoading }: DeleteButtonProps) => {
-  const stop = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+
+  const stopLinkNavigation = (e: React.MouseEvent) => {
+    e.stopPropagation(); // ✅ enough to prevent Link/card click
   };
 
-  const handleConfirm = async (e: React.MouseEvent) => {
-    stop(e);
-    await onConfirm(summaryId);
+  const handleDelete = async () => {
+    const result = await deleteSummary({ summaryId });
+    console.log("delete result:", result);
+
+    if (result?.success) {
+      router.refresh();
+    } else {
+      // at least you’ll see *why* it failed
+      alert(result?.message ?? "Delete failed");
+    }
   };
 
   return (
@@ -38,42 +44,35 @@ const DeleteButton = ({ summaryId, onConfirm, isLoading }: DeleteButtonProps) =>
         <Button
           variant="ghost"
           size="icon"
-          onClick={stop}
-          className="h-9 w-9 rounded-xl border border-black/10 bg-white/60 text-black/45 shadow-sm backdrop-blur transition hover:border-red-500/20 hover:bg-red-50 hover:text-red-600"
+          onClick={stopLinkNavigation}
+          className="h-9 w-9 rounded-xl border border-black/10 bg-white/60 text-black/40 backdrop-blur transition hover:bg-red-50 hover:text-red-600"
           aria-label="Delete summary"
         >
           <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>
 
-      <AlertDialogContent
-        onClick={stop}
-        className="rounded-2xl border border-black/10 bg-white/80 shadow-[0_30px_120px_-60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
-      >
+      <AlertDialogContent className="rounded-2xl border border-black/10 bg-white/85 shadow-xl backdrop-blur-xl">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-lg font-semibold text-black/90">
-            Delete this summary?
+          <AlertDialogTitle className="text-lg font-semibold">
+            Delete summary?
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-sm leading-relaxed text-black/60">
-            This action can’t be undone. The summary will be removed permanently.
+          <AlertDialogDescription className="text-sm text-black/60">
+            This action cannot be undone. The summary will be permanently removed.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <AlertDialogFooter className="gap-2 sm:gap-3">
-          <AlertDialogCancel
-            onClick={stop}
-            className="h-10 rounded-xl border border-black/10 bg-white/60 text-black/70 backdrop-blur transition hover:bg-white"
-          >
+        <AlertDialogFooter className="gap-2">
+          <AlertDialogCancel className="rounded-xl">
             Cancel
           </AlertDialogCancel>
 
           <AlertDialogAction asChild>
             <Button
-              onClick={handleConfirm}
-              disabled={isLoading}
-              className="h-10 rounded-xl bg-red-600 px-5 text-white transition hover:bg-red-700 disabled:opacity-60"
+              onClick={handleDelete}
+              className="rounded-xl bg-red-600 px-5 text-white hover:bg-red-700"
             >
-              {isLoading ? "Deleting..." : "Delete"}
+              Delete
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -83,4 +82,3 @@ const DeleteButton = ({ summaryId, onConfirm, isLoading }: DeleteButtonProps) =>
 };
 
 export default DeleteButton;
-
